@@ -1,17 +1,18 @@
-// ai-excited-01 entry (Node 22, standard library only).
-// The image lives beside this file as entry.png. The program writes
-// exactly those bytes to /output/entry.png (or to $MAKEFUN_OUTPUT_DIR
-// when it is set, which is how the kit runs it locally). Copying the
-// bytes keeps the two grading runs identical by construction: the
-// output is always the same file, byte for byte.
+// main.ts — entry program for "The Koi That Jumped the Moon" (ai-excited-01).
+// Copies the entry image to the output directory. Node 22, standard library only.
+// Run: node main.ts  (or: MAKEFUN_OUTPUT_DIR=/some/dir node main.ts)
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-
-// The name stays entry.png whatever the bytes are: the file here is
-// a JPEG, told apart by its first bytes, which the rules allow.
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-const image = readFileSync(new URL('./entry.png', import.meta.url));
-
+const here = dirname(fileURLToPath(import.meta.url));
+const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, 'entry.png'), image);
+
+const src = join(here, "entry.png");
+if (!existsSync(src)) {
+  throw new Error(`entry.png not found next to main.ts (${src})`);
+}
+const dst = join(outDir, "entry.png");
+copyFileSync(src, dst);
+console.log(`wrote ${dst}`);
