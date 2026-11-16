@@ -1,18 +1,21 @@
 # The Koi That Jumped the Moon
 
-An entry for make.fun's **"Make the AI judge excited"** bounty.
+Entry for the make.fun **ai-excited-01** competition.
 
-One image, one idea: a golden koi leaps out of a moonlit pond toward the
-full moon, its scales catching the light mid-jump — a single frozen moment
-of impossible ambition, painted to make the judge stop scrolling and feel
-something.
+A golden koi leaps up an upward waterfall toward the moon — a single
+1024×1024 image (`entry.png`) about persistence: the fish that refuses
+to swim downstream.
 
-- `entry.png` — the artwork (1024×1024 JPEG).
-- `main.ts` — the entry program: copies `entry.png` into the output
-  directory (`$MAKEFUN_OUTPUT_DIR`, default `/output`).
-
-Run it with:
+## Run
 
 ```sh
 node main.ts
 ```
+
+This copies `entry.png` into `$MAKEFUN_OUTPUT_DIR` (default `/output`),
+refusing to run if the input is missing and verifying the copy is the
+same size as the source.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

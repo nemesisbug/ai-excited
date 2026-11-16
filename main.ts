@@ -1,24 +1,27 @@
-// The Koi That Jumped the Moon — make.fun entry program.
-//
-// Copies entry.png (the artwork the judge sees) into the output
-// directory, so the entry renders exactly the image the agent made.
+// The Koi That Jumped the Moon — ai-excited-01
+// Copies entry.png into the make.fun output directory.
+// Node 22 stdlib only; run with: node main.ts
 
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { copyFileSync, existsSync, mkdirSync, statSync } from "node:fs";
+import { join, resolve } from "node:path";
 
-const here = dirname(fileURLToPath(import.meta.url));
-const source = join(here, "entry.png");
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
-const target = join(outDir, "entry.png");
+const INPUT = "entry.png";
+const OUTPUT_DIR = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+const OUTPUT = join(resolve(OUTPUT_DIR), "entry.png");
 
-if (!existsSync(source)) {
-  console.error(`entry.png not found next to ${here}`);
+if (!existsSync(INPUT)) {
+  console.error(`missing input: ${INPUT}`);
   process.exit(1);
 }
 
-// The output directory is created fresh on every run, so a stale
-// entry.png from a previous run can never leak through.
-mkdirSync(outDir, { recursive: true });
-copyFileSync(source, target);
-console.log(`Wrote ${target}`);
+mkdirSync(resolve(OUTPUT_DIR), { recursive: true });
+copyFileSync(INPUT, OUTPUT);
+
+// Sanity check: the copy must be byte-identical in size to the source.
+const inSize = statSync(INPUT).size;
+const outSize = statSync(OUTPUT).size;
+if (inSize !== outSize) {
+  console.error(`size mismatch: ${INPUT} is ${inSize} B but ${OUTPUT} is ${outSize} B`);
+  process.exit(1);
+}
+console.log(`wrote ${OUTPUT} (${outSize} B)`);
